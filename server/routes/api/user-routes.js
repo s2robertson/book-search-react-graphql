@@ -11,7 +11,20 @@ const {
 const { authMiddleware } = require('../../utils/auth');
 
 // put authMiddleware anywhere we need to send a token for verification of user
-router.route('/').post(createUser).put(authMiddleware, saveBook);
+router.route('/').post(createUser)
+.put(authMiddleware, async (req, res) => {
+    // `req.user` is created in the auth middleware function
+    const user = req.user;
+    const book = req.body;
+    try {
+        const updatedUser = await saveBook(user, book);
+        res.json(updatedUser);
+    } catch (err) {
+        console.error(err);
+        res.status(500).json({ message: 'An error occurred' });
+    }
+    
+});
 
 router.post('/login', async (req, res) => {
     try {
@@ -22,6 +35,7 @@ router.post('/login', async (req, res) => {
             res.status(400).json({ message: 'Invalid login details' });
         }
     } catch (err) {
+        console.error(err);
         res.status(500).json({ message: 'An error occurred' });
     }
 })
@@ -36,6 +50,7 @@ router.get('/me', authMiddleware, async (req, res) => {
             res.status(400).json({ message: `Cannot find user with id ${userId}` });
         }
     } catch (err) {
+        console.error(err);
         res.status(500).json({ message: 'An error occurred' });
     }
 });
