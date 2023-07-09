@@ -2,6 +2,7 @@ const { AuthenticationError } = require('apollo-server-express');
 const {
     getSingleUser,
     saveBook,
+    deleteBook,
     login
 } = require('../controllers/user-controller')
 
@@ -23,6 +24,10 @@ const resolvers = {
         saveBook(parent, args, { user }) {
             // console.log(`Saving book, user=${user}, book=${JSON.stringify(args)}`)
             return saveBook(user, args);
+        },
+
+        deleteBook(parent, { bookId }, { user }) {
+            return deleteBook(user, bookId);
         }
     }
 };
