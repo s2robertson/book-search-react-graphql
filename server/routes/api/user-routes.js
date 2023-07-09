@@ -26,7 +26,19 @@ router.post('/login', async (req, res) => {
     }
 })
 
-router.route('/me').get(authMiddleware, getSingleUser);
+router.get('/me', authMiddleware, async (req, res) => {
+    try {
+        const userId = req.user ? req.user._id : req.params.id;
+        const user = await getSingleUser(userId);
+        if (user) {
+            res.json(user);
+        } else {
+            res.status(400).json({ message: `Cannot find user with id ${userId}` });
+        }
+    } catch (err) {
+        res.status(500).json({ message: 'An error occurred' });
+    }
+});
 
 router.route('/books/:bookId').delete(authMiddleware, deleteBook);
 
