@@ -5,10 +5,19 @@ import SignUpForm from './SignupForm';
 import LoginForm from './LoginForm';
 
 import Auth from '../utils/auth';
+// import { useApolloClient } from '@apollo/client';
 
 const AppNavbar = () => {
   // set modal display state
   const [showModal, setShowModal] = useState(false);
+
+  /* Currently unused because Auth exists outside of React, and uses window.location.assign,
+   * which clears cache by resetting the page entirely.
+  const apolloClient = useApolloClient();
+  async function logout() {
+    await apolloClient.clearStore();
+    Auth.logout();
+  }*/
 
   return (
     <>
