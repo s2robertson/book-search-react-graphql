@@ -1,10 +1,13 @@
 const { AuthenticationError } = require('apollo-server-express');
-const { login } = require('../controllers/user-controller')
+const {
+    getSingleUser,
+    login
+} = require('../controllers/user-controller')
 
 const resolvers = {
     Query: {
-        user() {
-            return null;
+        currentUser(parent, args, { user }) {
+            return user ? getSingleUser(user._id) : null;
         }
     },
     Mutation: {

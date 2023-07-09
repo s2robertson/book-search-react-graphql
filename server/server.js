@@ -5,10 +5,12 @@ const routes = require('./routes');
 
 const { ApolloServer } = require('apollo-server-express');
 const { typeDefs, resolvers } = require('./gql-schema');
+const { authMiddlewareGraphQL } = require('./utils/auth');
 const apolloServer = new ApolloServer({
   typeDefs,
   resolvers,
-  csrfPrevention: true
+  csrfPrevention: true,
+  context: authMiddlewareGraphQL
 });
 
 const app = express();
