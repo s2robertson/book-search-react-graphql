@@ -32,7 +32,7 @@ export function createCurrentUserCacheUpdater(path) {
 
         cache.writeQuery({
             query: QUERY_CURRENT_USER,
-            data: userData
+            data: { currentUser: userData }
         });
     }
 }
