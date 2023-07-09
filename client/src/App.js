@@ -5,8 +5,10 @@ import {
   ApolloProvider,
   HttpLink,
   ApolloLink,
-  concat
+  concat,
+  gql
 } from '@apollo/client';
+import { createFragmentRegistry } from '@apollo/client/cache';
 
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import SearchBooks from './pages/SearchBooks';
@@ -37,9 +39,27 @@ const authMiddleware = new ApolloLink((operation, forward) => {
   return forward(operation);
 })
 
+const userDetailsFragment = gql`
+fragment UserDetails on User {
+  _id
+  username
+  email
+  savedBooks {
+      bookId
+      title
+      description
+      authors
+      image
+      link
+  }
+}
+`;
+
 const client = new ApolloClient({
   uri: '/graphql',
-  cache: new InMemoryCache(),
+  cache: new InMemoryCache({
+    fragments: createFragmentRegistry(userDetailsFragment)
+  }),
   link: concat(authMiddleware, httpLink)
 });
 
