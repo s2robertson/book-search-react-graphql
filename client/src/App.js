@@ -6,9 +6,14 @@ import SearchBooks from './pages/SearchBooks';
 import SavedBooks from './pages/SavedBooks';
 import Navbar from './components/Navbar';
 
+import Auth from './utils/auth';
+
 const client = new ApolloClient({
   uri: '/graphql',
-  cache: new InMemoryCache()
+  cache: new InMemoryCache(),
+  headers: {
+    authorization: Auth.getToken() ? `Bearer ${Auth.getToken()}` : ''
+  }
 });
 
 function App() {
