@@ -21,7 +21,7 @@ const resolvers = {
         },
 
         saveBook(parent, args, { user }) {
-            console.log(`Saving book, user=${user}, book=${JSON.stringify(args)}`)
+            // console.log(`Saving book, user=${user}, book=${JSON.stringify(args)}`)
             return saveBook(user, args);
         }
     }
