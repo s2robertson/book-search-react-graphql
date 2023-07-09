@@ -23,10 +23,16 @@ const resolvers = {
 
         saveBook(parent, args, { user }) {
             // console.log(`Saving book, user=${user}, book=${JSON.stringify(args)}`)
+            if (!user) {
+                throw new AuthenticationError('You must be logged in to save books');
+            }
             return saveBook(user, args);
         },
 
         deleteBook(parent, { bookId }, { user }) {
+            if (!user) {
+                throw new AuthenticationError('You must be logged in to delete saved books');
+            }
             return deleteBook(user, bookId);
         }
     }
