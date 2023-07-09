@@ -5,7 +5,9 @@ import { useMutation } from '@apollo/client';
 
 import Auth from '../utils/auth';
 import { USER_LOGIN } from '../utils/mutations';
-// import { QUERY_CURRENT_USER } from '../utils/queries';
+// import { QUERY_CURRENT_USER, createCurrentUserCacheUpdater } from '../utils/queries';
+
+// const currentUserCacheUpdater = createCurrentUserCacheUpdater(['userLogin', 'user']);
 
 const LoginForm = () => {
   const [userFormData, setUserFormData] = useState({ email: '', password: '' });
@@ -27,16 +29,8 @@ const LoginForm = () => {
     },
     /* This performance optimization doesn't work, probably because Auth.login 
      * calls window.location.assign instead of using react router
-    update(cache, { data, errors }) {
-      if (errors) {
-        return;
-      }
-      const { userLogin: { user: currentUser } } = data;
-      cache.writeQuery({
-        query: QUERY_CURRENT_USER,
-        data: currentUser
-      });
-    }*/
+    update: currentUserCacheUpdater
+    */
   })
 
   const handleInputChange = (event) => {
