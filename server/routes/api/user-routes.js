@@ -55,6 +55,16 @@ router.get('/me', authMiddleware, async (req, res) => {
     }
 });
 
-router.route('/books/:bookId').delete(authMiddleware, deleteBook);
+router.delete('/books/:bookId', authMiddleware, async (req, res) => {
+    const user = req.user;
+    const bookId = req.params.bookId;
+    try {
+        const updatedUser = await deleteBook(user, bookId);
+        res.json(updatedUser);
+    } catch (err) {
+        console.error(err);
+        res.status(500).json({ message: 'An error occurred' });
+    }
+});
 
 module.exports = router;

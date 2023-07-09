@@ -55,15 +55,11 @@ module.exports = {
     ).exec();
   },
   // remove a book from `savedBooks`
-  async deleteBook({ user, params }, res) {
-    const updatedUser = await User.findOneAndUpdate(
+  async deleteBook(user, bookId) {
+    return User.findOneAndUpdate(
       { _id: user._id },
-      { $pull: { savedBooks: { bookId: params.bookId } } },
+      { $pull: { savedBooks: { bookId } } },
       { new: true }
-    );
-    if (!updatedUser) {
-      return res.status(404).json({ message: "Couldn't find user with this id!" });
-    }
-    return res.json(updatedUser);
+    ).exec();
   },
 };
