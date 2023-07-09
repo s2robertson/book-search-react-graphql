@@ -1,5 +1,12 @@
 import React from 'react';
-import { ApolloClient, InMemoryCache, ApolloProvider } from '@apollo/client';
+import {
+  ApolloClient,
+  InMemoryCache,
+  ApolloProvider,
+  HttpLink,
+  ApolloLink,
+  concat
+} from '@apollo/client';
 
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import SearchBooks from './pages/SearchBooks';
@@ -8,12 +15,32 @@ import Navbar from './components/Navbar';
 
 import Auth from './utils/auth';
 
+const httpLink = new HttpLink({ uri: '/graphql' });
+const authMiddleware = new ApolloLink((operation, forward) => {
+  operation.setContext(({ headers = {} }) => {
+    let token = Auth.getToken();
+    if (token && Auth.isTokenExpired(token)) {
+      token = null;
+    }
+
+    let result = {
+      headers: {
+        ...headers
+      }
+    }
+    if (token) {
+      result.headers.authorization = `Bearer ${token}`;
+    }
+    return result;
+  });
+
+  return forward(operation);
+})
+
 const client = new ApolloClient({
   uri: '/graphql',
   cache: new InMemoryCache(),
-  headers: {
-    authorization: Auth.getToken() ? `Bearer ${Auth.getToken()}` : ''
-  }
+  link: concat(authMiddleware, httpLink)
 });
 
 function App() {
