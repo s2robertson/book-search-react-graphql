@@ -14,7 +14,7 @@ const resolvers = {
         }
     },
     Mutation: {
-        async userLogin(parent, args) {
+        async login(parent, args) {
             const loginDetails = await login(args);
             if (!loginDetails) {
                 throw new AuthenticationError('Invalid login details');

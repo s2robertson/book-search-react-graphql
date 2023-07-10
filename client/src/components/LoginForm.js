@@ -4,7 +4,7 @@ import { Form, Button, Alert } from 'react-bootstrap';
 import { useMutation } from '@apollo/client';
 
 import Auth from '../utils/auth';
-import { USER_LOGIN } from '../utils/mutations';
+import { LOGIN_USER } from '../utils/mutations';
 // import { createCurrentUserCacheUpdater } from '../utils/queries';
 
 // const currentUserCacheUpdater = createCurrentUserCacheUpdater(['userLogin', 'user']);
@@ -14,8 +14,8 @@ const LoginForm = () => {
   const [validated] = useState(false);
   const [showAlert, setShowAlert] = useState(false);
 
-  const [loginUser] = useMutation(USER_LOGIN, {
-    onCompleted({ userLogin: { user, token } }) {
+  const [loginUser] = useMutation(LOGIN_USER, {
+    onCompleted({ login: { user, token } }) {
       // console.log(user);
       setUserFormData({
         email: '',
