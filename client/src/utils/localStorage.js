@@ -8,7 +8,11 @@ export const getSavedBookIds = () => {
 
 export const saveBookIds = (bookIdArr) => {
   if (bookIdArr.length) {
-    localStorage.setItem('saved_books', JSON.stringify(bookIdArr));
+    try {
+      localStorage.setItem('saved_books', JSON.stringify(bookIdArr));
+    } catch (err) {
+      console.error(err);
+    }
   } else {
     localStorage.removeItem('saved_books');
   }
