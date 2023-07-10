@@ -11,16 +11,16 @@ import { useQuery, useMutation } from '@apollo/client';
 import { removeBookId } from '../utils/localStorage';
 
 import { GET_ME, createCurrentUserCacheUpdater } from '../utils/queries';
-import { DELETE_BOOK } from '../utils/mutations';
+import { REMOVE_BOOK } from '../utils/mutations';
 
-const currentUserCacheUpdater = createCurrentUserCacheUpdater('deleteBook')
+const currentUserCacheUpdater = createCurrentUserCacheUpdater('removeBook')
 
 const SavedBooks = () => {
   // const [userData, setUserData] = useState({});
   const { data, loading } = useQuery(GET_ME);
   const userData = data?.currentUser;
 
-  const [deleteBook] = useMutation(DELETE_BOOK, {
+  const [removeBook] = useMutation(REMOVE_BOOK, {
     onCompleted(data, { variables: { bookId } }) {
       if (bookId) {
         removeBookId(bookId);
@@ -62,7 +62,7 @@ const SavedBooks = () => {
                     <Card.Title>{book.title}</Card.Title>
                     <p className='small'>Authors: {book.authors}</p>
                     <Card.Text>{book.description}</Card.Text>
-                    <Button className='btn-block btn-danger' onClick={() => deleteBook({ variables: { bookId: book.bookId } })}>
+                    <Button className='btn-block btn-danger' onClick={() => removeBook({ variables: { bookId: book.bookId } })}>
                       Delete this Book!
                     </Button>
                   </Card.Body>

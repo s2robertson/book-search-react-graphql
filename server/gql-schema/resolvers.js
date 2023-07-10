@@ -34,7 +34,7 @@ const resolvers = {
             return saveBook(user, args);
         },
 
-        deleteBook(parent, { bookId }, { user }) {
+        removeBook(parent, { bookId }, { user }) {
             if (!user) {
                 throw new AuthenticationError('You must be logged in to delete saved books');
             }
