@@ -11,7 +11,16 @@ const {
 const { authMiddleware } = require('../../utils/auth');
 
 // put authMiddleware anywhere we need to send a token for verification of user
-router.route('/').post(createUser)
+router.route('/').post(async (req, res) => {
+    try {
+        const authDetails = await createUser(req.body);
+        res.json(authDetails);
+    } catch (err) {
+        console.error(err);
+        res.status(500).json({ message: 'User couldn\'t be created' });
+    }
+    
+})
 .put(authMiddleware, async (req, res) => {
     // `req.user` is created in the auth middleware function
     const user = req.user;

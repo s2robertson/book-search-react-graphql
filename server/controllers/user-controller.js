@@ -9,14 +9,10 @@ module.exports = {
     return User.findById(userId).exec();
   },
   // create a user, sign a token, and send it back (to client/src/components/SignUpForm.js)
-  async createUser({ body }, res) {
-    const user = await User.create(body);
-
-    if (!user) {
-      return res.status(400).json({ message: 'Something is wrong!' });
-    }
+  async createUser(userDetails) {
+    const user = await User.create(userDetails)
     const token = signToken(user);
-    res.json({ token, user });
+    return { token, user };
   },
   // login a user, sign a token, and send it back (to client/src/components/LoginForm.js)
   // {body} is destructured req.body
