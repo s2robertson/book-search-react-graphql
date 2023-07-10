@@ -5,7 +5,7 @@ import { useMutation } from '@apollo/client';
 
 import Auth from '../utils/auth';
 import { USER_LOGIN } from '../utils/mutations';
-// import { QUERY_CURRENT_USER, createCurrentUserCacheUpdater } from '../utils/queries';
+// import { createCurrentUserCacheUpdater } from '../utils/queries';
 
 // const currentUserCacheUpdater = createCurrentUserCacheUpdater(['userLogin', 'user']);
 
@@ -16,12 +16,12 @@ const LoginForm = () => {
 
   const [loginUser] = useMutation(USER_LOGIN, {
     onCompleted({ userLogin: { user, token } }) {
-      console.log(user);
-      Auth.login(token);
+      // console.log(user);
       setUserFormData({
         email: '',
         password: '',
       });
+      Auth.login(token);
     },
     onError(err) {
       console.error(err);
