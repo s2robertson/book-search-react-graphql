@@ -1,8 +1,12 @@
 import React, { useState } from 'react';
 import { Form, Button, Alert } from 'react-bootstrap';
+import { useMutation } from '@apollo/client';
 
-import { createUser } from '../utils/API';
 import Auth from '../utils/auth';
+import { ADD_USER } from '../utils/mutations';
+// import { createCurrentUserCacheUpdater } from '../utils/queries';
+
+// const currentUserCacheUpdater = createCurrentUserCacheUpdater(['addUser', 'user']);
 
 const SignupForm = () => {
   // set initial form state
@@ -11,6 +15,25 @@ const SignupForm = () => {
   const [validated] = useState(false);
   // set state for alert
   const [showAlert, setShowAlert] = useState(false);
+
+  const [createUser] = useMutation(ADD_USER, {
+    onCompleted({ addUser: { user, token }}) {
+      setUserFormData({
+        username: '',
+        email: '',
+        password: '',
+      });
+      Auth.login(token);
+    },
+    onError(err) {
+      console.error(err);
+      setShowAlert(true);
+    },
+    /* This performance optimization doesn't work, probably because Auth.login 
+     * calls window.location.assign instead of using react router
+    update: currentUserCacheUpdater
+    */
+  })
 
   const handleInputChange = (event) => {
     const { name, value } = event.target;
@@ -27,26 +50,7 @@ const SignupForm = () => {
       event.stopPropagation();
     }
 
-    try {
-      const response = await createUser(userFormData);
-
-      if (!response.ok) {
-        throw new Error('something went wrong!');
-      }
-
-      const { token, user } = await response.json();
-      console.log(user);
-      Auth.login(token);
-    } catch (err) {
-      console.error(err);
-      setShowAlert(true);
-    }
-
-    setUserFormData({
-      username: '',
-      email: '',
-      password: '',
-    });
+    createUser({ variables: { ...userFormData } });
   };
 
   return (
