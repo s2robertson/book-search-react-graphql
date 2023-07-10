@@ -10,14 +10,14 @@ import { useQuery, useMutation } from '@apollo/client';
 
 import { removeBookId } from '../utils/localStorage';
 
-import { QUERY_CURRENT_USER, createCurrentUserCacheUpdater } from '../utils/queries';
+import { GET_ME, createCurrentUserCacheUpdater } from '../utils/queries';
 import { DELETE_BOOK } from '../utils/mutations';
 
 const currentUserCacheUpdater = createCurrentUserCacheUpdater('deleteBook')
 
 const SavedBooks = () => {
   // const [userData, setUserData] = useState({});
-  const { data, loading } = useQuery(QUERY_CURRENT_USER);
+  const { data, loading } = useQuery(GET_ME);
   const userData = data?.currentUser;
 
   const [deleteBook] = useMutation(DELETE_BOOK, {

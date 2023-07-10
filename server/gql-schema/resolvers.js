@@ -9,7 +9,7 @@ const {
 
 const resolvers = {
     Query: {
-        currentUser(parent, args, { user }) {
+        me(parent, args, { user }) {
             return user ? getSingleUser(user._id) : null;
         }
     },

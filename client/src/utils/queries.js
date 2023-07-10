@@ -1,8 +1,8 @@
 import { gql } from "@apollo/client";
 
-export const QUERY_CURRENT_USER = gql`
+export const GET_ME = gql`
     query currentUser {
-        currentUser {
+        currentUser: me {
             ...UserDetails
         }
     }
@@ -31,7 +31,7 @@ export function createCurrentUserCacheUpdater(path) {
         }
 
         cache.writeQuery({
-            query: QUERY_CURRENT_USER,
+            query: GET_ME,
             data: { currentUser: userData }
         });
     }
