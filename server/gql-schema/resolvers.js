@@ -26,12 +26,12 @@ const resolvers = {
             return createUser(args);
         },
 
-        saveBook(parent, args, { user }) {
+        saveBook(parent, { book }, { user }) {
             // console.log(`Saving book, user=${user}, book=${JSON.stringify(args)}`)
             if (!user) {
                 throw new AuthenticationError('You must be logged in to save books');
             }
-            return saveBook(user, args);
+            return saveBook(user, book);
         },
 
         removeBook(parent, { bookId }, { user }) {
