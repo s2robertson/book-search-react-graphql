@@ -1,6 +1,7 @@
 const { AuthenticationError } = require('apollo-server-express');
 const {
     getSingleUser,
+    createUser,
     saveBook,
     deleteBook,
     login
@@ -19,6 +20,10 @@ const resolvers = {
                 throw new AuthenticationError('Invalid login details');
             }
             return loginDetails;
+        },
+
+        addUser(parent, args) {
+            return createUser(args);
         },
 
         saveBook(parent, args, { user }) {
