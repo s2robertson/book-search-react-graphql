@@ -1,6 +1,4 @@
-const { gql } = require('apollo-server-express');
-
-const typeDefs = gql`
+const typeDefs = `#graphql
     type Book {
         bookId: ID!
         title: String!

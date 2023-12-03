@@ -1,4 +1,4 @@
-const { AuthenticationError } = require('apollo-server-express');
+const { GraphQLError } = require('graphql');
 const jwt = require('jsonwebtoken');
 
 // set token secret and expiration date
@@ -44,7 +44,7 @@ module.exports = {
       return { user };
     } catch (err) {
       console.log(`Invalid token: ${err}`);
-      throw new AuthenticationError('Invalid token');
+      throw new GraphQLError('Invalid auth token');
     }
   },
 

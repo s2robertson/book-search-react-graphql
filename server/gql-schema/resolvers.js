@@ -1,4 +1,5 @@
-const { AuthenticationError } = require('apollo-server-express');
+const { GraphQLError } = require('graphql');
+const { ApolloServerErrorCode } = require('@apollo/server/errors');
 const {
     getSingleUser,
     createUser,
@@ -17,7 +18,9 @@ const resolvers = {
         async login(parent, args) {
             const loginDetails = await login(args);
             if (!loginDetails) {
-                throw new AuthenticationError('Invalid login details');
+                throw new GraphQLError('Invalid login details', {
+                    extensions: { code: ApolloServerErrorCode.BAD_USER_INPUT }
+                });
             }
             return loginDetails;
         },
@@ -29,14 +32,18 @@ const resolvers = {
         saveBook(parent, { book }, { user }) {
             // console.log(`Saving book, user=${user}, book=${JSON.stringify(args)}`)
             if (!user) {
-                throw new AuthenticationError('You must be logged in to save books');
+                throw new GraphQLError('You must be logged in to save books', {
+                    extensions: { code: 'UNAUTHENTICATED' }
+                });
             }
             return saveBook(user, book);
         },
 
         removeBook(parent, { bookId }, { user }) {
             if (!user) {
-                throw new AuthenticationError('You must be logged in to delete saved books');
+                throw new GraphQLError('You must be logged in to delete saved books', {
+                    extensions: { code: 'UNAUTHENTICATED' }
+                });
             }
             return deleteBook(user, bookId);
         }
