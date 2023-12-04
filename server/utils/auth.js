@@ -1,9 +1,11 @@
+require('../config/env');
+
 const { GraphQLError } = require('graphql');
 const jwt = require('jsonwebtoken');
 
 // set token secret and expiration date
-const secret = 'mysecretsshhhhh';
-const expiration = '2h';
+const secret = process.env.JWT_SECRET;
+const expiration = process.env.JWT_EXPIRATION;
 
 function extractUserFromRequest(req) {
   let token = req.body.token || req.query.token  || req.headers.authorization;
