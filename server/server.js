@@ -4,7 +4,6 @@ const http = require('http');
 const express = require('express');
 const cors = require('cors');
 const path = require('path');
-const routes = require('./routes');
 
 const app = express();
 const httpServer = http.createServer(app);
@@ -25,11 +24,15 @@ Promise.all([dbConnection, apolloServer.start()]).then(() => {
   app.use(cors(), express.json())
   app.use('/graphql', expressMiddleware(apolloServer, { context: authMiddlewareGraphQL }));
 
-  // if we're in production, serve client/build as static assets
   if (process.env.NODE_ENV === 'production') {
+    // if we're in production, serve client/build as static assets
     app.use(express.static(path.join(__dirname, '../client/build')));
+
+    // and a fallback route for react router
+    app.use((req, res) => {
+      res.sendFile(path.join(__dirname, '../client/build/index.html'));
+    });
   }
-  app.use(routes);
 
   httpServer.listen({ port: PORT }, () => {
     console.log(`🌍 Now listening on localhost:${PORT}`);
