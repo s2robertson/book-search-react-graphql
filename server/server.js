@@ -31,8 +31,8 @@ Promise.all([dbConnection, apolloServer.start()]).then(() => {
   }
   app.use(routes);
 
-  return httpServer.listen({ port: PORT });
-}).then(() => {
-  console.log(`🌍 Now listening on localhost:${PORT}`);
-  console.log(`Use GraphQL at http://localhost:${PORT}/graphql`);
+  httpServer.listen({ port: PORT }, () => {
+    console.log(`🌍 Now listening on localhost:${PORT}`);
+    console.log(`Use GraphQL at http://localhost:${PORT}/graphql`);
+  });
 });
