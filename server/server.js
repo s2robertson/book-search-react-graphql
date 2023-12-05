@@ -26,11 +26,11 @@ Promise.all([dbConnection, apolloServer.start()]).then(() => {
 
   if (process.env.NODE_ENV === 'production') {
     // if we're in production, serve client/build as static assets
-    app.use(express.static(path.join(__dirname, '../client/build')));
+    app.use(express.static(path.join(__dirname, '../../client/build')));
 
     // and a fallback route for react router
     app.use((req, res) => {
-      res.sendFile(path.join(__dirname, '../client/build/index.html'));
+      res.sendFile(path.join(__dirname, '../../client/build/index.html'));
     });
   }
 

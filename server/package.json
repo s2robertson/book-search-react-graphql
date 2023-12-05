@@ -4,8 +4,9 @@
   "description": "",
   "main": "server.js",
   "scripts": {
-    "start": "node server.js",
-    "dev": "nodemon server.js"
+    "build": "tsc",
+    "start": "node ./dist/server.js",
+    "dev": "concurrently -n tsc,node \"tsc --watch\" \"nodemon ./dist/server.js\""
   },
   "keywords": [],
   "author": "",
@@ -21,6 +22,10 @@
     "mongoose": "^7.0.2"
   },
   "devDependencies": {
-    "nodemon": "^2.0.3"
+    "@types/express": "^4.17.21",
+    "@types/node": "^20.10.3",
+    "concurrently": "^8.2.2",
+    "nodemon": "^2.0.3",
+    "typescript": "^5.3.2"
   }
 }
