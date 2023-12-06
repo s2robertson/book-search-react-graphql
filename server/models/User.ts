@@ -1,8 +1,7 @@
-const { Schema, model } = require('mongoose');
-const bcrypt = require('bcrypt');
+import { Schema, model } from "mongoose";
+import bcrypt from 'bcrypt';
 
-// import schema from Book.js
-const bookSchema = require('./Book');
+import bookSchema from "./Book.js";
 
 const userSchema = new Schema(
   {
@@ -26,6 +25,18 @@ const userSchema = new Schema(
   },
   // set this to use virtual below
   {
+    methods: {
+      isCorrectPassword(password: string) {
+        return bcrypt.compare(password, this.password);
+      }
+    },
+    virtuals: {
+      bookCount: {
+        get() {
+          return this.savedBooks.length;
+        }
+      }
+    },
     toJSON: {
       virtuals: true,
       transform(doc, ret, options) {
@@ -46,16 +57,4 @@ userSchema.pre('save', async function (next) {
   next();
 });
 
-// custom method to compare and validate password for logging in
-userSchema.methods.isCorrectPassword = async function (password) {
-  return bcrypt.compare(password, this.password);
-};
-
-// when we query a user, we'll also get another field called `bookCount` with the number of saved books we have
-userSchema.virtual('bookCount').get(function () {
-  return this.savedBooks.length;
-});
-
-const User = model('User', userSchema);
-
-module.exports = User;
+export = model('User', userSchema);
