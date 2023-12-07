@@ -1,7 +1,7 @@
-import { Schema, model } from "mongoose";
+import { Schema, model, InferSchemaType } from "mongoose";
 import bcrypt from 'bcrypt';
 
-import bookSchema from "./Book.js";
+import { bookSchema } from "./Book.js";
 
 const userSchema = new Schema(
   {
@@ -57,4 +57,5 @@ userSchema.pre('save', async function (next) {
   next();
 });
 
-export = model('User', userSchema);
+export const User = model('User', userSchema);
+export type UserType = InferSchemaType<typeof userSchema>;
