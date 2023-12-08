@@ -2,11 +2,7 @@
 import { User, UserType } from '../models/User.js';
 import { BookType } from '../models/Book.js';
 // import sign token function from auth
-import { signToken } from '../utils/auth';
-
-interface UserToken extends Pick<UserType, 'username' | 'email'> {
-  _id: string;
-}
+import { signToken, UserTokenPayload } from '../utils/auth';
 
 // get a single user by either their id or their username
 export function getSingleUser(userId: string) {
@@ -39,7 +35,7 @@ export async function login(credentials: Pick<UserType, 'email' | 'password'>) {
 }
 
 // save a book to a user's `savedBooks` field by adding it to the set (to prevent duplicates)
-export async function saveBook(user: UserToken, body: BookType) {
+export async function saveBook(user: UserTokenPayload, body: BookType) {
   // console.log(user);
   return User.findOneAndUpdate(
     { _id: user._id },
@@ -49,7 +45,7 @@ export async function saveBook(user: UserToken, body: BookType) {
 }
 
 // remove a book from `savedBooks`
-export async function deleteBook(user: UserToken, bookId: string) {
+export async function deleteBook(user: UserTokenPayload, bookId: string) {
   return User.findOneAndUpdate(
     { _id: user._id },
     { $pull: { savedBooks: { bookId } } },
