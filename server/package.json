@@ -4,9 +4,9 @@
   "description": "",
   "main": "server.js",
   "scripts": {
-    "build": "tsc",
+    "build": "tsc && tscp",
     "start": "node ./dist/server.js",
-    "dev": "concurrently -n tsc,node \"tsc --watch\" \"nodemon ./dist/server.js\""
+    "dev": "npm run build && concurrently -n tsc,node,tscp \"tsc --watch\" \"nodemon ./dist/server.js\" \"tscp -w\""
   },
   "keywords": [],
   "author": "",
@@ -28,6 +28,7 @@
     "@types/node": "^20.10.3",
     "concurrently": "^8.2.2",
     "nodemon": "^2.0.3",
-    "typescript": "^5.3.2"
+    "typescript": "^5.3.2",
+    "typescript-cp": "^0.1.9"
   }
 }

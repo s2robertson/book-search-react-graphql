@@ -1,0 +1,3 @@
+{
+    "ignored_files": ['node_modules', 'dist']
+}
