@@ -1,14 +1,15 @@
-const { GraphQLError } = require('graphql');
-const { ApolloServerErrorCode } = require('@apollo/server/errors');
-const {
+import { GraphQLError } from 'graphql';
+import { ApolloServerErrorCode } from '@apollo/server/errors';
+import {
     getSingleUser,
     createUser,
     saveBook,
     deleteBook,
     login
-} = require('../controllers/user-controller')
+} from '../controllers/user-controller.js';
+import { Resolvers } from './__generated__/resolver-types.js';
 
-const resolvers = {
+const resolvers: Resolvers = {
     Query: {
         me(parent, args, { user }) {
             return user ? getSingleUser(user._id) : null;
@@ -30,7 +31,6 @@ const resolvers = {
         },
 
         saveBook(parent, { book }, { user }) {
-            // console.log(`Saving book, user=${user}, book=${JSON.stringify(args)}`)
             if (!user) {
                 throw new GraphQLError('You must be logged in to save books', {
                     extensions: { code: 'UNAUTHENTICATED' }
@@ -50,4 +50,4 @@ const resolvers = {
     }
 };
 
-module.exports = resolvers;
+export = resolvers;

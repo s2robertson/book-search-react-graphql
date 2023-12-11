@@ -11,6 +11,7 @@ node_modules
 # production
 build
 dist
+__generated__
 
 # misc
 .DS_Store

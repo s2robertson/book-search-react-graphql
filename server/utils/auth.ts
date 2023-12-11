@@ -2,7 +2,8 @@ import '../config/env';
 
 import { GraphQLError } from 'graphql';
 import jwt from 'jsonwebtoken';
-import { Types } from 'mongoose';
+import { UserType } from '../models/User';
+import { Require_id } from 'mongoose';
 import { Request, Response, NextFunction } from 'express';
 
 // set token secret and expiration date
@@ -16,7 +17,7 @@ if (!expiration) {
 }
 
 export interface UserTokenPayload {
-  _id: string | Types.ObjectId;
+  _id: string;
   username: string,
   email: string
 }
@@ -71,7 +72,9 @@ export function authMiddlewareGraphQL({ req }: { req: Request }) {
   }
 }
 
-export function signToken({ username, email, _id }: UserTokenPayload) {
+export type UserContext = ReturnType<typeof authMiddlewareGraphQL>
+
+export function signToken({ username, email, _id }: Pick<Require_id<UserType>, '_id' | 'username' | 'email'>) {
   const payload = { username, email, _id };
 
   return jwt.sign({ data: payload }, secret, { expiresIn: expiration });

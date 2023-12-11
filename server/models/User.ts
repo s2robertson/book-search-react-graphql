@@ -1,4 +1,4 @@
-import { Schema, model, InferSchemaType } from "mongoose";
+import { Schema, model, InferSchemaType, HydratedDocument } from "mongoose";
 import bcrypt from 'bcrypt';
 
 import { bookSchema } from "./Book.js";
@@ -59,3 +59,4 @@ userSchema.pre('save', async function (next) {
 
 export const User = model('User', userSchema);
 export type UserType = InferSchemaType<typeof userSchema>;
+export type UserDocument = HydratedDocument<UserType>
