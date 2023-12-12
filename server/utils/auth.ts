@@ -65,14 +65,14 @@ export function authMiddleware(req: Request, res: Response, next: NextFunction) 
 export function authMiddlewareGraphQL({ req }: { req: Request }) {
   try {
     const user = extractUserFromRequest(req);
-    return { user };
+    return Promise.resolve({ user });
   } catch (err) {
     console.log(`Invalid token: ${err}`);
     throw new GraphQLError('Invalid auth token');
   }
 }
 
-export type UserContext = ReturnType<typeof authMiddlewareGraphQL>
+export type UserContext = Awaited<ReturnType<typeof authMiddlewareGraphQL>>;
 
 export function signToken({ username, email, _id }: Pick<Require_id<UserType>, '_id' | 'username' | 'email'>) {
   const payload = { username, email, _id };

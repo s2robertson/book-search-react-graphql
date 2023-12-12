@@ -1,20 +1,21 @@
-const dbConnection = require('./config/connection');
+import dbConnection from './config/connection';
 
-const http = require('http');
-const express = require('express');
-const cors = require('cors');
-const path = require('path');
+import http from 'node:http';
+import express, { Request, Response } from 'express';
+import cors from 'cors';
+import * as path from 'path';
+
+import { ApolloServer } from '@apollo/server';
+import { expressMiddleware } from '@apollo/server/express4';
+import { ApolloServerPluginDrainHttpServer } from '@apollo/server/plugin/drainHttpServer';
+import { typeDefs, resolvers } from './gql-schema/index.js';
+import { authMiddlewareGraphQL, UserContext } from './utils/auth.js';
 
 const app = express();
 const httpServer = http.createServer(app);
 const PORT = process.env.PORT || 3001;
 
-const { ApolloServer } = require('@apollo/server');
-const { expressMiddleware } = require('@apollo/server/express4');
-const { ApolloServerPluginDrainHttpServer } = require('@apollo/server/plugin/drainHttpServer');
-const { typeDefs, resolvers } = require('./gql-schema');
-const { authMiddlewareGraphQL } = require('./utils/auth');
-const apolloServer = new ApolloServer({
+const apolloServer = new ApolloServer<UserContext>({
   typeDefs,
   resolvers,
   plugins: [ApolloServerPluginDrainHttpServer({ httpServer })]
