@@ -50,4 +50,4 @@ const resolvers: Resolvers = {
     }
 };
 
-export = resolvers;
+export default resolvers;
