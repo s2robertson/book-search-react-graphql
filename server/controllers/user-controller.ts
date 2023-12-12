@@ -2,7 +2,7 @@
 import { User, UserType } from '../models/User.js';
 import { BookType } from '../models/Book.js';
 // import sign token function from auth
-import { signToken, UserTokenPayload } from '../utils/auth';
+import { signToken, UserTokenPayload } from '../utils/auth.js';
 
 type PartialByKey<T, K extends keyof T> = Omit<T, K> & Partial<Pick<T, K>>;
 // It looks like InferSchemaType does this by default in mongoose ^8.0

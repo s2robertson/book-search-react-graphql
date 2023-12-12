@@ -7,7 +7,7 @@ const config: CodegenConfig = {
             plugins: ['typescript', 'typescript-resolvers'],
             config: {
                 useIndexSignature: true,
-                contextType: '../../utils/auth#UserContext',
+                contextType: '../../utils/auth.js#UserContext',
                 // scalars: {
                 //     ID: {
                 //         input: 'string',
@@ -15,7 +15,7 @@ const config: CodegenConfig = {
                 //     }
                 // },
                 mappers: {
-                    User: '../../models/User#UserDocument'
+                    User: '../../models/User.js#UserDocument'
                 }
             }
         }

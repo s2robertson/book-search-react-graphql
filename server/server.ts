@@ -1,9 +1,9 @@
-import dbConnection from './config/connection';
+import dbConnection from './config/connection.js';
 
 import http from 'node:http';
-import express, { Request, Response } from 'express';
+import express from 'express';
 import cors from 'cors';
-import * as path from 'path';
+import { URL, fileURLToPath } from 'node:url';
 
 import { ApolloServer } from '@apollo/server';
 import { expressMiddleware } from '@apollo/server/express4';
@@ -27,11 +27,11 @@ Promise.all([dbConnection, apolloServer.start()]).then(() => {
 
   if (process.env.NODE_ENV === 'production') {
     // if we're in production, serve client/build as static assets
-    app.use(express.static(path.join(__dirname, '../../client/build')));
+    app.use(express.static(fileURLToPath(new URL('../../client/build', import.meta.url))));
 
     // and a fallback route for react router
     app.use((req, res) => {
-      res.sendFile(path.join(__dirname, '../../client/build/index.html'));
+      res.sendFile(fileURLToPath(new URL('../../client/build/index.html', import.meta.url)));
     });
   }
 

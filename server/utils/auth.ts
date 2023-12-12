@@ -1,8 +1,8 @@
-import '../config/env';
+import '../config/env.js';
 
 import { GraphQLError } from 'graphql';
 import jwt from 'jsonwebtoken';
-import { UserType } from '../models/User';
+import { UserType } from '../models/User.js';
 import { Require_id } from 'mongoose';
 import { Request, Response, NextFunction } from 'express';
 
