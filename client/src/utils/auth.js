@@ -1,49 +1,53 @@
+import { useApolloClient, useReactiveVar, makeVar } from '@apollo/client';
+import { useNavigate } from 'react-router-dom';
+
 // use this to decode a token and get the user's information out of it
 import decode from 'jwt-decode';
 
-// create a new class to instantiate for a user
-class AuthService {
-  // get user data
-  getProfile() {
-    return decode(this.getToken());
-  }
+import { GET_ME } from './queries';
 
-  // check if user's logged in
-  loggedIn() {
-    // Checks if there is a saved token and it's still valid
-    const token = this.getToken();
-    return !!token && !this.isTokenExpired(token); // handwaiving here
-  }
+const ID_TOKEN = 'id_token';
+const tokenVar = makeVar(localStorage.getItem(ID_TOKEN));
 
-  // check if token is expired
-  isTokenExpired(token) {
-    try {
-      const decoded = decode(token);
-      if (decoded.exp < Date.now() / 1000) {
-        return true;
-      } else return false;
-    } catch (err) {
-      return false;
+export function useAuth() {
+  const token = useReactiveVar(tokenVar);
+  const apolloClient = useApolloClient();
+  const navigate = useNavigate();
+
+  return {
+    loggedIn: !!token && !isTokenExpired(token),
+    login(user, token) {
+      localStorage.setItem(ID_TOKEN, token);
+      tokenVar(token);
+      apolloClient.writeQuery({
+        query: GET_ME,
+        data: { currentUser: user }
+      })
+      navigate('/');
+    },
+    logout() {
+      // console.log('logout called');
+      localStorage.removeItem(ID_TOKEN);
+      tokenVar(null);
+      apolloClient.clearStore();
+      navigate('/');
     }
-  }
-
-  getToken() {
-    // Retrieves the user token from localStorage
-    return localStorage.getItem('id_token');
-  }
-
-  login(idToken) {
-    // Saves user token to localStorage
-    localStorage.setItem('id_token', idToken);
-    window.location.assign('/');
-  }
-
-  logout() {
-    // Clear user token and profile data from localStorage
-    localStorage.removeItem('id_token');
-    // this will reload the page and reset the state of the application
-    window.location.assign('/');
   }
 }
 
-export default new AuthService();
+// check if token is expired
+function isTokenExpired(token) {
+  try {
+    const decoded = decode(token);
+    if (decoded.exp < Date.now() / 1000) {
+      return true;
+    } else return false;
+  } catch (err) {
+    return false;
+  }
+}
+
+export function getToken() {
+  const token = tokenVar();
+  return !token || isTokenExpired(token) ? null : token;
+}

@@ -3,34 +3,28 @@ import React, { useState } from 'react';
 import { Form, Button, Alert } from 'react-bootstrap';
 import { useMutation } from '@apollo/client';
 
-import Auth from '../utils/auth';
+import { useAuth } from '../utils/auth';
 import { LOGIN_USER } from '../utils/mutations';
-// import { createCurrentUserCacheUpdater } from '../utils/queries';
 
-// const currentUserCacheUpdater = createCurrentUserCacheUpdater(['userLogin', 'user']);
-
-const LoginForm = () => {
+const LoginForm = ({ handleModalClose }) => {
   const [userFormData, setUserFormData] = useState({ email: '', password: '' });
   const [validated] = useState(false);
   const [showAlert, setShowAlert] = useState(false);
+  const { login } = useAuth();
 
   const [loginUser] = useMutation(LOGIN_USER, {
     onCompleted({ login: { user, token } }) {
-      // console.log(user);
       setUserFormData({
         email: '',
         password: '',
       });
-      Auth.login(token);
+      login(user, token);
+      handleModalClose();
     },
     onError(err) {
       console.error(err);
       setShowAlert(true);
     },
-    /* This performance optimization doesn't work, probably because Auth.login 
-     * calls window.location.assign instead of using react router
-    update: currentUserCacheUpdater
-    */
   })
 
   const handleInputChange = (event) => {

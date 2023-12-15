@@ -15,16 +15,13 @@ import SearchBooks from './pages/SearchBooks';
 import SavedBooks from './pages/SavedBooks';
 import Navbar from './components/Navbar';
 
-import Auth from './utils/auth';
+import { getToken } from './utils/auth';
 
 const httpLink = new HttpLink({ uri: '/graphql' });
 const authMiddleware = new ApolloLink((operation, forward) => {
   operation.setContext(({ headers = {} }) => {
-    let token = Auth.getToken();
-    if (token && Auth.isTokenExpired(token)) {
-      token = null;
-    }
-
+    let token = getToken();
+    
     let result = {
       headers: {
         ...headers

@@ -4,20 +4,12 @@ import { Navbar, Nav, Container, Modal, Tab } from 'react-bootstrap';
 import SignUpForm from './SignupForm';
 import LoginForm from './LoginForm';
 
-import Auth from '../utils/auth';
-// import { useApolloClient } from '@apollo/client';
+import { useAuth } from '../utils/auth';
 
 const AppNavbar = () => {
+  const { loggedIn, logout } = useAuth();
   // set modal display state
   const [showModal, setShowModal] = useState(false);
-
-  /* Currently unused because Auth exists outside of React, and uses window.location.assign,
-   * which clears cache by resetting the page entirely.
-  const apolloClient = useApolloClient();
-  async function logout() {
-    await apolloClient.clearStore();
-    Auth.logout();
-  }*/
 
   return (
     <>
@@ -33,12 +25,12 @@ const AppNavbar = () => {
                 Search For Books
               </Nav.Link>
               {/* if user is logged in show saved books and logout */}
-              {Auth.loggedIn() ? (
+              {loggedIn ? (
                 <>
                   <Nav.Link as={Link} to='/saved'>
                     See Your Books
                   </Nav.Link>
-                  <Nav.Link onClick={Auth.logout}>Logout</Nav.Link>
+                  <Nav.Link onClick={logout}>Logout</Nav.Link>
                 </>
               ) : (
                 <Nav.Link onClick={() => setShowModal(true)}>Login/Sign Up</Nav.Link>

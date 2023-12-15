@@ -9,7 +9,7 @@ import {
 } from 'react-bootstrap';
 import { useMutation } from '@apollo/client';
 
-import Auth from '../utils/auth';
+import { useAuth } from '../utils/auth';
 import { searchGoogleBooks } from '../utils/API';
 import { saveBookIds, getSavedBookIds } from '../utils/localStorage';
 import { SAVE_BOOK } from '../utils/mutations';
@@ -24,6 +24,7 @@ const SearchBooks = () => {
   const [searchInput, setSearchInput] = useState('');
   // create state to hold saved bookId values
   const [savedBookIds, setSavedBookIds] = useState(getSavedBookIds);
+  const { loggedIn } = useAuth();
 
   const [saveBook] = useMutation(SAVE_BOOK, {
     onCompleted({ saveBook: user }) {
@@ -114,7 +115,7 @@ const SearchBooks = () => {
                     <Card.Title>{book.title}</Card.Title>
                     <p className='small'>Authors: {book.authors}</p>
                     <Card.Text>{book.description}</Card.Text>
-                    {Auth.loggedIn() && (
+                    {loggedIn && (
                       <Button
                         disabled={savedBookIds?.some((savedBookId) => savedBookId === book.bookId)}
                         className='btn-block btn-info'
