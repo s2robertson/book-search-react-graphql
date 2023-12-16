@@ -4,7 +4,7 @@ import { useNavigate } from 'react-router-dom';
 // use this to decode a token and get the user's information out of it
 import decode from 'jwt-decode';
 
-import { GET_ME } from './queries';
+import { GET_CURRENT_USER } from './queries';
 
 const ID_TOKEN = 'id_token';
 const tokenVar = makeVar(localStorage.getItem(ID_TOKEN));
@@ -20,7 +20,7 @@ export function useAuth() {
       localStorage.setItem(ID_TOKEN, token);
       tokenVar(token);
       apolloClient.writeQuery({
-        query: GET_ME,
+        query: GET_CURRENT_USER,
         data: { currentUser: user }
       })
       navigate('/');
