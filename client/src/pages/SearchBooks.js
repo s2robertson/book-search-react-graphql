@@ -13,9 +13,6 @@ import { useAuth } from '../utils/auth';
 import { searchGoogleBooks } from '../utils/API';
 import { saveBookIds, getSavedBookIds } from '../utils/localStorage';
 import { SAVE_BOOK } from '../utils/mutations';
-import { createCurrentUserCacheUpdater } from '../utils/queries';
-
-const currentUserCacheUpdater = createCurrentUserCacheUpdater('saveBook');
 
 const SearchBooks = () => {
   // create state for holding returned google api data
@@ -34,8 +31,7 @@ const SearchBooks = () => {
     },
     onError(err) {
       console.error(err);
-    },
-    update: currentUserCacheUpdater
+    }
   });
   
   // create method to search for books and set state on form submit

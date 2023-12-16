@@ -10,10 +10,8 @@ import { useQuery, useMutation } from '@apollo/client';
 
 import { removeBookId } from '../utils/localStorage';
 
-import { GET_ME, createCurrentUserCacheUpdater } from '../utils/queries';
+import { GET_ME } from '../utils/queries';
 import { REMOVE_BOOK } from '../utils/mutations';
-
-const currentUserCacheUpdater = createCurrentUserCacheUpdater('removeBook')
 
 const SavedBooks = () => {
   // const [userData, setUserData] = useState({});
@@ -28,8 +26,7 @@ const SavedBooks = () => {
     },
     onError(err) {
       console.error(err);
-    },
-    update: currentUserCacheUpdater
+    }
   });
 
   // if data isn't here yet, say so
