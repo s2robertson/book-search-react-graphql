@@ -4,12 +4,15 @@ import {
     ApolloProvider,
     HttpLink,
     ApolloLink,
-    concat,
+    from,
     gql
 } from '@apollo/client';
 import { createFragmentRegistry } from '@apollo/client/cache';
+import { removeTypenameFromVariables } from '@apollo/client/link/remove-typename';
+import { RestLink } from 'apollo-link-rest';
 
 import { getToken } from './auth';
+import { googleBooksTransformer } from './queries';
 
 const httpLink = new HttpLink({ uri: '/graphql' });
 const authMiddleware = new ApolloLink((operation, forward) => {
@@ -29,7 +32,11 @@ const authMiddleware = new ApolloLink((operation, forward) => {
 
   return forward(operation);
 });
-
+const restLink = new RestLink({
+    uri: 'https://www.googleapis.com/books/v1',
+    responseTransformer: googleBooksTransformer
+});
+const removeTypenameLink = removeTypenameFromVariables();
 
 const userDetailsFragment = gql`
 fragment UserDetails on User {
@@ -52,7 +59,7 @@ const client = new ApolloClient({
   cache: new InMemoryCache({
     fragments: createFragmentRegistry(userDetailsFragment)
   }),
-  link: concat(authMiddleware, httpLink)
+  link: from([removeTypenameLink, restLink, authMiddleware, httpLink])
 });
 
 function ApolloApp({ children }) {

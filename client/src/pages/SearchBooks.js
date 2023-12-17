@@ -7,29 +7,36 @@ import {
   Card,
   Row
 } from 'react-bootstrap';
-import { useQuery, useMutation } from '@apollo/client';
+import { useQuery, useLazyQuery, useMutation } from '@apollo/client';
 
 import { useAuth } from '../utils/auth';
-import { searchGoogleBooks } from '../utils/API';
-import { GET_CURRENT_USER } from '../utils/queries';
+import { GET_CURRENT_USER, SEARCH_BOOKS } from '../utils/queries';
 import { SAVE_BOOK } from '../utils/mutations';
 
 const SearchBooks = () => {
-  // create state for holding returned google api data
-  const [searchedBooks, setSearchedBooks] = useState([]);
   // create state for holding our search field data
   const [searchInput, setSearchInput] = useState('');
   
   const { loggedIn } = useAuth();
-  const { data } = useQuery(GET_CURRENT_USER, {
+  const { data: userData } = useQuery(GET_CURRENT_USER, {
     skip: !loggedIn
   });
   const savedBookIds = useMemo(() => {
     const res = new Set();
-    const savedBooks = data?.currentUser?.savedBooks || [];
+    const savedBooks = userData?.currentUser?.savedBooks || [];
     savedBooks.forEach(book => res.add(book.bookId));
     return res;
-  }, [data?.currentUser]);
+  }, [userData?.currentUser]);
+
+  const [searchGoogleBooks, { data: searchData }] = useLazyQuery(SEARCH_BOOKS, {
+    onCompleted() {
+      setSearchInput('');
+    },
+    onError(err) {
+      console.error(err);
+    }
+  });
+  const searchedBooks = searchData?.books || [];
 
   const [saveBook] = useMutation(SAVE_BOOK, {
     onError(err) {
@@ -37,36 +44,18 @@ const SearchBooks = () => {
     }
   });
   
-  // create method to search for books and set state on form submit
+  // create method to search for books on form submit
   const handleFormSubmit = async (event) => {
     event.preventDefault();
-
     if (!searchInput) {
       return false;
     }
-
-    try {
-      const response = await searchGoogleBooks(searchInput);
-
-      if (!response.ok) {
-        throw new Error('something went wrong!');
+    
+    searchGoogleBooks({
+      variables: {
+        query: searchInput
       }
-
-      const { items } = await response.json();
-
-      const bookData = items.map((book) => ({
-        bookId: book.id,
-        authors: book.volumeInfo.authors || ['No author to display'],
-        title: book.volumeInfo.title,
-        description: book.volumeInfo.description,
-        image: book.volumeInfo.imageLinks?.thumbnail || '',
-      }));
-
-      setSearchedBooks(bookData);
-      setSearchInput('');
-    } catch (err) {
-      console.error(err);
-    }
+    });
   };
 
   return (
