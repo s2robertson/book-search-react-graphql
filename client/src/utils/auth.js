@@ -18,18 +18,19 @@ export function useAuth() {
     loggedIn: !!token && !isTokenExpired(token),
     login(user, token) {
       localStorage.setItem(ID_TOKEN, token);
-      tokenVar(token);
       apolloClient.writeQuery({
         query: GET_CURRENT_USER,
         data: { currentUser: user }
-      })
+      });
+      // this needs to be after writeQuery because apparently reactive vars cause synchronous re-renders
+      tokenVar(token);
       navigate('/');
     },
     logout() {
       // console.log('logout called');
       localStorage.removeItem(ID_TOKEN);
-      tokenVar(null);
       apolloClient.clearStore();
+      tokenVar(null);
       navigate('/');
     }
   }
