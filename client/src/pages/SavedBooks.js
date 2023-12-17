@@ -8,8 +8,6 @@ import {
 } from 'react-bootstrap';
 import { useQuery, useMutation } from '@apollo/client';
 
-import { removeBookId } from '../utils/localStorage';
-
 import { GET_CURRENT_USER } from '../utils/queries';
 import { REMOVE_BOOK } from '../utils/mutations';
 
@@ -19,11 +17,6 @@ const SavedBooks = () => {
   const userData = data?.currentUser;
 
   const [removeBook] = useMutation(REMOVE_BOOK, {
-    onCompleted(data, { variables: { bookId } }) {
-      if (bookId) {
-        removeBookId(bookId);
-      }
-    },
     onError(err) {
       console.error(err);
     }

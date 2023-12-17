@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useMemo } from 'react';
 import {
   Container,
   Col,
@@ -7,11 +7,11 @@ import {
   Card,
   Row
 } from 'react-bootstrap';
-import { useMutation } from '@apollo/client';
+import { useQuery, useMutation } from '@apollo/client';
 
 import { useAuth } from '../utils/auth';
 import { searchGoogleBooks } from '../utils/API';
-import { saveBookIds, getSavedBookIds } from '../utils/localStorage';
+import { GET_CURRENT_USER } from '../utils/queries';
 import { SAVE_BOOK } from '../utils/mutations';
 
 const SearchBooks = () => {
@@ -19,16 +19,19 @@ const SearchBooks = () => {
   const [searchedBooks, setSearchedBooks] = useState([]);
   // create state for holding our search field data
   const [searchInput, setSearchInput] = useState('');
-  // create state to hold saved bookId values
-  const [savedBookIds, setSavedBookIds] = useState(getSavedBookIds);
+  
   const { loggedIn } = useAuth();
+  const { data } = useQuery(GET_CURRENT_USER, {
+    skip: !loggedIn
+  });
+  const savedBookIds = useMemo(() => {
+    const res = new Set();
+    const savedBooks = data?.currentUser?.savedBooks || [];
+    savedBooks.forEach(book => res.add(book.bookId));
+    return res;
+  }, [data?.currentUser]);
 
   const [saveBook] = useMutation(SAVE_BOOK, {
-    onCompleted({ saveBook: user }) {
-      const bookIds = user.savedBooks.map(book => book.bookId);
-      setSavedBookIds(bookIds);
-      saveBookIds(bookIds);
-    },
     onError(err) {
       console.error(err);
     }
@@ -113,10 +116,10 @@ const SearchBooks = () => {
                     <Card.Text>{book.description}</Card.Text>
                     {loggedIn && (
                       <Button
-                        disabled={savedBookIds?.some((savedBookId) => savedBookId === book.bookId)}
+                        disabled={savedBookIds.has(book.bookId)}
                         className='btn-block btn-info'
                         onClick={() => saveBook({ variables: { book } })}>
-                        {savedBookIds?.some((savedBookId) => savedBookId === book.bookId)
+                        {savedBookIds.has(book.bookId)
                           ? 'This book has already been saved!'
                           : 'Save this Book!'}
                       </Button>
