@@ -1,14 +1,14 @@
-import { gql } from "@apollo/client";
+import { gql } from "../__generated__/gql";
 
-export const GET_CURRENT_USER = gql`
+export const GET_CURRENT_USER = gql(`
     query currentUser {
         currentUser: me {
             ...UserDetails
         }
     }
-`;
+`);
 
-export const SEARCH_BOOKS = gql`
+export const SEARCH_BOOKS = gql(`
     query searchBooks($query: String!) {
         books(q: $query) @rest(type: "Book", path: "/volumes?{args}") {
             bookId
@@ -18,10 +18,24 @@ export const SEARCH_BOOKS = gql`
             image
         }
     }
-`;
+`);
 
-export function googleBooksTransformer(response) {
-    return response.json().then(({ items }) => {
+type GoogleBooksResponse = {
+    items: {
+        id: string,
+        volumeInfo: {
+            title: string,
+            authors?: string[],
+            description: string,
+            imageLinks?: {
+                thumbnail?: string
+            }
+        }
+    }[]
+}
+
+export function googleBooksTransformer(response: Response) {
+    return response.json().then(({ items }: GoogleBooksResponse) => {
         return items.map(book => ({
             bookId: book.id,
             authors: book.volumeInfo.authors || ['No author to display'],
