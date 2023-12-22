@@ -3,11 +3,11 @@ import {
     InMemoryCache,
     ApolloProvider,
     HttpLink,
-    ApolloLink,
-    from,
-    gql
+    from
 } from '@apollo/client';
+import { gql } from '../__generated__/gql';
 import { createFragmentRegistry } from '@apollo/client/cache';
+import { setContext } from '@apollo/client/link/context';
 import { removeTypenameFromVariables } from '@apollo/client/link/remove-typename';
 import { RestLink } from 'apollo-link-rest';
 
@@ -15,22 +15,16 @@ import { getToken } from './auth';
 import { googleBooksTransformer } from './queries';
 
 const httpLink = new HttpLink({ uri: '/graphql' });
-const authMiddleware = new ApolloLink((operation, forward) => {
-  operation.setContext(({ headers = {} }) => {
-    let token = getToken();
-    
-    let result = {
-      headers: {
-        ...headers
-      }
+const authLink = setContext((_, { headers = {} }) => {
+  let token = getToken();
+  
+  let result = {
+    headers: {
+      ...headers,
+      authorization: token ? `Bearer ${token}` : ''
     }
-    if (token) {
-      result.headers.authorization = `Bearer ${token}`;
-    }
-    return result;
-  });
-
-  return forward(operation);
+  }
+  return result;
 });
 const restLink = new RestLink({
     uri: 'https://www.googleapis.com/books/v1',
@@ -38,7 +32,7 @@ const restLink = new RestLink({
 });
 const removeTypenameLink = removeTypenameFromVariables();
 
-const userDetailsFragment = gql`
+const userDetailsFragment = gql(`
 fragment UserDetails on User {
   _id
   username
@@ -52,17 +46,17 @@ fragment UserDetails on User {
       link
   }
 }
-`;
+`);
 
 const client = new ApolloClient({
   uri: '/graphql',
   cache: new InMemoryCache({
     fragments: createFragmentRegistry(userDetailsFragment)
   }),
-  link: from([removeTypenameLink, restLink, authMiddleware, httpLink])
+  link: from([removeTypenameLink, restLink, authLink, httpLink])
 });
 
-function ApolloApp({ children }) {
+function ApolloApp({ children }: { children: React.ReactNode }) {
     return (
         <ApolloProvider client={client}>{children}</ApolloProvider>
     )
