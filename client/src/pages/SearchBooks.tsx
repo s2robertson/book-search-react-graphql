@@ -45,7 +45,7 @@ const SearchBooks = () => {
   });
   
   // create method to search for books on form submit
-  const handleFormSubmit = async (event) => {
+  const handleFormSubmit = (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     if (!searchInput) {
       return false;
