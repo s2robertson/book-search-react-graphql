@@ -2,9 +2,10 @@ import { useApolloClient, useReactiveVar, makeVar } from '@apollo/client';
 import { useNavigate } from 'react-router-dom';
 
 // use this to decode a token and get the user's information out of it
-import decode from 'jwt-decode';
+import { jwtDecode } from 'jwt-decode';
 
 import { GET_CURRENT_USER } from './queries';
+import { User } from '../__generated__/graphql';
 
 const ID_TOKEN = 'id_token';
 const tokenVar = makeVar(localStorage.getItem(ID_TOKEN));
@@ -16,7 +17,7 @@ export function useAuth() {
 
   return {
     loggedIn: !!token && !isTokenExpired(token),
-    login(user, token) {
+    login(user: User, token: string) {
       localStorage.setItem(ID_TOKEN, token);
       apolloClient.writeQuery({
         query: GET_CURRENT_USER,
@@ -37,10 +38,10 @@ export function useAuth() {
 }
 
 // check if token is expired
-function isTokenExpired(token) {
+function isTokenExpired(token: string) {
   try {
-    const decoded = decode(token);
-    if (decoded.exp < Date.now() / 1000) {
+    const decoded = jwtDecode(token);
+    if (decoded.exp && decoded.exp < Date.now() / 1000) {
       return true;
     } else return false;
   } catch (err) {
