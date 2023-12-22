@@ -7,7 +7,11 @@ import { useMutation } from '@apollo/client';
 import { useAuth } from '../utils/auth';
 import { ADD_USER } from '../utils/mutations';
 
-const SignupForm = ({ handleModalClose }) => {
+type SignupFormProps = {
+  handleModalClose: () => void
+}
+
+const SignupForm = ({ handleModalClose }: SignupFormProps) => {
   // set initial form state
   const [userFormData, setUserFormData] = useState({ username: '', email: '', password: '' });
   // set state for form validation
@@ -32,12 +36,12 @@ const SignupForm = ({ handleModalClose }) => {
     },
   })
 
-  const handleInputChange = (event) => {
+  const handleInputChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = event.target;
     setUserFormData({ ...userFormData, [name]: value });
   };
 
-  const handleFormSubmit = async (event) => {
+  const handleFormSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
 
     // check if form has everything (as per react-bootstrap docs)
