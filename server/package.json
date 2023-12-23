@@ -5,7 +5,7 @@
   "main": "server.js",
   "type": "module",
   "engines": {
-    "node": ">=16"
+    "node": "18.x"
   },
   "scripts": {
     "build": "graphql-codegen && tsc && tscp",
