@@ -1,7 +1,7 @@
 # Book Search (React/GraphQL)
 
 ## Description
-This is a book search app that uses the [Google Books APIs](https://developers.google.com/books) to look up books on behalf of a user, and allows the saving and removing of favourites.  I built this as an exercise in using GraphQL (specifically [Apollo](https://www.apollographql.com/)).
+This is a book search app that uses the [Google Books APIs](https://developers.google.com/books) to look up books on behalf of a user, and allows the saving and removing of favourites.  I built this as an exercise in using GraphQL (specifically [Apollo](https://www.apollographql.com/)).  I later converted it to TypeScript, and used [GraphQL code generation](https://the-guild.dev/graphql/codegen) for end-to-end type safety.
 
 ## Installation
 Running `npm install` will install all dependencies in both the server and client if run from the project root.  Running `npm run build` will build the client for production.  The app requires a MongoDB database, and for the `MONGODB_URI` to be set unless the database is co-located with the server (the default is `mongodb://127.0.0.1:27017/googlebooks`).  The environment variable will be picked up automatically if placed in a `.env` file in the server's root (see [dotenv](https://www.npmjs.com/package/dotenv) for more details).
