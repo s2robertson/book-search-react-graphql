@@ -9,8 +9,10 @@
   "scripts": {
     "start": "cd server && npm start",
     "dev": "concurrently -n server,client \"cd server && npm run dev\" \"cd client && npm start\"",
-    "install": "cd server && npm i && cd ../client && npm i",
-    "build": "cd client && npm run build && cd ../server && npm run build"
+    "build": "npm run build-client && npm run build-server",
+    "build-client": "cd client && npm i --production=false && npm run build",
+    "build-server": "cd server && npm i --production=false && npm run build",
+    "heroku-postbuild": "cd client && npm prune && cd ../server && npm prune"
   },
   "keywords": [],
   "author": "",
