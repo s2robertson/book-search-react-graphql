@@ -3,6 +3,9 @@
   "version": "1.0.0",
   "description": "",
   "main": "server/server.js",
+  "engines": {
+    "node": ">=16"
+  },
   "scripts": {
     "start": "cd server && npm start",
     "dev": "concurrently -n server,client \"cd server && npm run dev\" \"cd client && npm start\"",
