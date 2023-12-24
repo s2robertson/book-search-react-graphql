@@ -12,7 +12,7 @@
     "build": "npm run build-client && npm run build-server",
     "build-client": "cd client && npm i --production=false && npm run build",
     "build-server": "cd server && npm i --production=false && npm run build",
-    "heroku-postbuild": "cd client && npm prune && cd ../server && npm prune"
+    "heroku-postbuild": "npm run build && cd client && npm prune && cd ../server && npm prune"
   },
   "keywords": [],
   "author": "",
